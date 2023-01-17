@@ -1,4 +1,4 @@
-#+begin_src sh :exports no :results output
+#+begin_src
 near login
 #+end_src
 
@@ -15,7 +15,7 @@ Logged in as [ vugomarscourse.testnet ] with public key [ ed25519:3smuY1... ] su
 
 #+end_src
 
-#+begin_src sh :exports no :results output
+#+begin_src
 near create-account nftk10.vugomarscourse.testnet --masterAccount vugomarscourse.testnet --initialBalance 20
 #+end_src
 
@@ -23,12 +23,12 @@ near create-account nftk10.vugomarscourse.testnet --masterAccount vugomarscourse
 : Saving key to '/Users/vudangquang/.near-credentials/testnet/nftk10.vugomarscourse.testnet.json'
 : Account nftk10.vugomarscourse.testnet for network "testnet" was created.
 
-#+begin_src sh :exports no :results output
+#+begin_src
 near create-account --help
 #+end_src
 
 #+RESULTS:
-#+begin_example
+#+begin_src
 near create-account <accountId>
 
 create a new developer account (subaccount of the masterAccount, ex: app.alice.test)
@@ -53,14 +53,14 @@ Options:
       --publicKey                Public key to initialize the account with  [string]
       --newLedgerKey             HD key path to use with Ledger. Used to generate public key if not specified directly  [string] [default: "44'/397'/0'/0'/1'"]
       --initialBalance           Number of tokens to transfer to newly created account  [string] [default: "100"]
-#+end_example
+#+end_src
 
-#+begin_src sh :exports no :results output
+#+begin_src
 pnpm run build:contract
 #+end_src
 
 #+RESULTS:
-#+begin_example
+#+begin_src
 
 > ts-contract-nft@1.0.0 build:contract /Users/vudangquang/vugomars/myblog/ts-contract-nft
 > cd contract && pnpm run build
@@ -103,9 +103,9 @@ node_modules/near-sdk-js/cli/deps/wasi-sdk/bin/clang --sysroot=node_modules/near
 Executing wasi-stub...
 node_modules/near-sdk-js/cli/deps/binaryen/wasi-stub/run.sh build/hello_near.wasm >/dev/null
 
-#+end_example
+#+end_src
 
-#+begin_src sh :exports no :results output
+#+begin_src
 near deploy nftk10.vugomarscourse.testnet --wasmFile contract/build/hello_near.wasm
 #+end_src
 
@@ -116,7 +116,7 @@ near deploy nftk10.vugomarscourse.testnet --wasmFile contract/build/hello_near.w
 : https://explorer.testnet.near.org/transactions/Fm8baiWRh7kGWhwWAoCx8D5rPDux6KZMx4TB9gFUXidz
 : Done deploying to nftk10.vugomarscourse.testnet
 
-#+begin_src sh :exports no :results output
+#+begin_src
 near deploy nftk10.vugomarscourse.testnet --wasmFile contract/build/hello_near.wasm --initFunction init --initArgs '{"owner_id" : "vugomarscourse.testnet"}'
 #+end_src
 
@@ -127,11 +127,11 @@ near deploy nftk10.vugomarscourse.testnet --wasmFile contract/build/hello_near.w
  https://explorer.testnet.near.org/transactions/CHLUfHzx79Wd2geG76ffiEnNiHy6cuq8i1GURfX4H7vR
 : Done deploying and initializing nftk10.vugomarscourse.testnet
 
-#+begin_src sh :exports no :results output
+#+begin_src
 near view nftk10.vugomarscourse.testnet nft_metadata
 #+end_src
 
-#+begin_src sh :exports no :results output
+#+begin_src
 near view nftk10.vugomarscourse.testnet nft_total_supply
 #+end_src
 
@@ -139,7 +139,7 @@ near view nftk10.vugomarscourse.testnet nft_total_supply
 : View call: nftk10.vugomarscourse.testnet.nft_total_supply()
 : 1
 
-#+begin_src sh :exports no :results output
+#+begin_src
 near call nftk10.vugomarscourse.testnet nft_mint '{"token_id": "token-03", "receiver_id": "vugomarscourse.testnet", "metadata": {"title": "NFT token 01", "description": "hello there this is nft token 01", "media": "https://bafybeihwe2nq3pimzra4n2oydvwbeubmccbb4g6urwmerwfurelyqt4lvi.ipfs.nftstorage.link"}}' --accountId vugomarscourse.testnet
 
 #+end_src
@@ -154,12 +154,12 @@ near call nftk10.vugomarscourse.testnet nft_mint '{"token_id": "token-03", "rece
 : https://explorer.testnet.near.org/transactions/DF1geUgU8tqovaWyz3xbQCEAEfJsCxqe7iXTbyX7r2yU
 : ''
 
-#+begin_src sh :exports no :results output
+#+begin_src
 near view nftk10.vugomarscourse.testnet nft_token '{"token_id": "token-01"}'
 #+end_src
 
 #+RESULTS:
-#+begin_example
+#+begin_src
 View call: nftk10.vugomarscourse.testnet.nft_token({"token_id": "token-01"})
 {
   token_id: 'token-01',
@@ -170,14 +170,14 @@ View call: nftk10.vugomarscourse.testnet.nft_token({"token_id": "token-01"})
     media: 'https://bafybeihwe2nq3pimzra4n2oydvwbeubmccbb4g6urwmerwfurelyqt4lvi.ipfs.nftstorage.link'
   }
 }
-#+end_example
+#+end_src
 
-#+begin_src sh :exports no :results output
+#+begin_src
 near view nftk10.vugomarscourse.testnet nft_tokens
 #+end_src
 
 #+RESULTS:
-#+begin_example
+#+begin_src
 View call: nftk10.vugomarscourse.testnet.nft_tokens()
 [
   {
@@ -208,15 +208,15 @@ View call: nftk10.vugomarscourse.testnet.nft_tokens()
     }
   }
 ]
-#+end_example
+#+end_src
 
 
-#+begin_src sh :exports no :results output
+#+begin_src
 near view nftk10.vugomarscourse.testnet nft_tokens_for_owner '{"owner_id": "vugomarscourse.testnet"}'
 #+end_src
 
 #+RESULTS:
-#+begin_example
+#+begin_src
 View call: nftk10.vugomarscourse.testnet.nft_tokens_for_owner({"owner_id": "vugomarscourse.testnet"})
 [
   {
@@ -247,4 +247,4 @@ View call: nftk10.vugomarscourse.testnet.nft_tokens_for_owner({"owner_id": "vugo
     }
   }
 ]
-#+end_example
+#+end_src
