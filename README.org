@@ -1,0 +1,250 @@
+#+begin_src sh :exports no :results output
+near login
+#+end_src
+
+#+begin_src
+Please authorize NEAR CLI on at least one of your accounts.
+
+If your browser doesn't automatically open, please visit this URL
+https://wallet.testnet.near.org/login/?referrer=NEAR+CLI&public_key=ed25519%3A3smuY1MmEDfZNNCvgXbciUCgUFhf7h7QNhPxWu46Cvpn&success_url=http%3A%2F%2F127.0.0.1%3A5001
+Please authorize at least one account at the URL above.
+
+Which account did you authorize for use with NEAR CLI?
+Enter it here (if not redirected automatically):
+Logged in as [ vugomarscourse.testnet ] with public key [ ed25519:3smuY1... ] successfully
+
+#+end_src
+
+#+begin_src sh :exports no :results output
+near create-account nftk10.vugomarscourse.testnet --masterAccount vugomarscourse.testnet --initialBalance 20
+#+end_src
+
+#+RESULTS:
+: Saving key to '/Users/vudangquang/.near-credentials/testnet/nftk10.vugomarscourse.testnet.json'
+: Account nftk10.vugomarscourse.testnet for network "testnet" was created.
+
+#+begin_src sh :exports no :results output
+near create-account --help
+#+end_src
+
+#+RESULTS:
+#+begin_example
+near create-account <accountId>
+
+create a new developer account (subaccount of the masterAccount, ex: app.alice.test)
+
+Options:
+      --help                     Show help  [boolean]
+      --version                  Show version number  [boolean]
+      --nodeUrl, --node_url      NEAR node URL  [string] [default: "https://rpc.testnet.near.org"]
+      --networkId, --network_id  NEAR network ID, allows using different keys based on network  [string] [default: "testnet"]
+      --helperUrl                NEAR contract helper URL  [string]
+      --keyPath                  Path to master account key  [string]
+      --accountId, --account_id  Unique identifier for the newly created account  [string] [required]
+      --useLedgerKey             Use Ledger for signing with given HD key path  [string] [default: "44'/397'/0'/0'/1'"]
+      --seedPhrase               Seed phrase mnemonic  [string]
+      --seedPath                 HD path derivation  [string] [default: "m/44'/397'/0'"]
+      --walletUrl                Website for NEAR Wallet  [string]
+      --contractName             Account name of contract  [string]
+      --masterAccount            Account used to create requested account.  [string] [required]
+      --helperAccount            Expected top-level account for a network  [string]
+  -v, --verbose                  Prints out verbose output  [boolean] [default: false]
+  -f, --force                    Forcefully execute the desired action even if it is unsafe to do so  [boolean] [default: false]
+      --publicKey                Public key to initialize the account with  [string]
+      --newLedgerKey             HD key path to use with Ledger. Used to generate public key if not specified directly  [string] [default: "44'/397'/0'/0'/1'"]
+      --initialBalance           Number of tokens to transfer to newly created account  [string] [default: "100"]
+#+end_example
+
+#+begin_src sh :exports no :results output
+pnpm run build:contract
+#+end_src
+
+#+RESULTS:
+#+begin_example
+
+> ts-contract-nft@1.0.0 build:contract /Users/vudangquang/vugomars/myblog/ts-contract-nft
+> cd contract && pnpm run build
+
+
+> hello_near@1.0.0 build /Users/vudangquang/vugomars/myblog/ts-contract-nft/contract
+> ./build.sh
+
+>> Building contract
+Building src/contract.ts contract...
+check TypeScript build of src/contract.ts with tsc
+node_modules/.bin/tsc --noEmit --experimentalDecorators --target es2020 --moduleResolution node src/contract.ts
+
+Creating build directory...
+mkdir -p build
+
+Creating build/hello_near.js file with Rollup...
+Babel init method export done
+Babel nft_mint method export done
+Babel nft_total_supply method export done
+Babel nft_supply_for_owner method export done
+Babel nft_tokens_for_owner method export done
+Babel nft_token method export done
+Babel nft_tokens method export done
+Babel nft_transfer method export done
+Babel nft_transfer_call method export done
+Babel nft_metadata method export done
+Creating build/hello_near.h file with QJSC...
+node_modules/near-sdk-js/cli/deps/qjsc -c -m -o build/hello_near.h -N code build/hello_near.js
+
+Genereting methods.h file
+build/hello_near.js
+Creating build/hello_near.wasm contract...
+cp node_modules/near-sdk-js/cli/builder/builder.c build/builder.c
+
+mv build/hello_near.h build/code.h
+
+node_modules/near-sdk-js/cli/deps/wasi-sdk/bin/clang --sysroot=node_modules/near-sdk-js/cli/deps/wasi-sdk/share/wasi-sysroot --target=wasm32-wasi -nostartfiles -Oz -flto -D_GNU_SOURCE '-DCONFIG_VERSION="2021-03-27"' -DCONFIG_BIGNUM -Inode_modules/near-sdk-js/cli/deps/quickjs -I. build/builder.c node_modules/near-sdk-js/cli/deps/quickjs/quickjs.c node_modules/near-sdk-js/cli/deps/quickjs/libregexp.c node_modules/near-sdk-js/cli/deps/quickjs/libunicode.c node_modules/near-sdk-js/cli/deps/quickjs/cutils.c node_modules/near-sdk-js/cli/deps/quickjs/quickjs-libc-min.c node_modules/near-sdk-js/cli/deps/quickjs/libbf.c -lm -Wl,--no-entry -Wl,--allow-undefined -Wl,-z,stack-size=262144 -Wl,--lto-O3 -o build/hello_near.wasm
+
+Executing wasi-stub...
+node_modules/near-sdk-js/cli/deps/binaryen/wasi-stub/run.sh build/hello_near.wasm >/dev/null
+
+#+end_example
+
+#+begin_src sh :exports no :results output
+near deploy nftk10.vugomarscourse.testnet --wasmFile contract/build/hello_near.wasm
+#+end_src
+
+: This account already has a deployed contract [ EmqF1cd3pgiQYzZYRUrfurhsPeTGzhHTvdk4UdEWhXnV ]. Do you want to proceed? (y/n) y
+: Starting deployment. Account id: nftk10.vugomarscourse.testnet, node: https://rpc.testnet.near.org, helper: https://helper.testnet.near.org, file: contract/build/hello_near.wasm
+: Transaction Id Fm8baiWRh7kGWhwWAoCx8D5rPDux6KZMx4TB9gFUXidz
+: To see the transaction in the transaction explorer, please open this url in your browser
+: https://explorer.testnet.near.org/transactions/Fm8baiWRh7kGWhwWAoCx8D5rPDux6KZMx4TB9gFUXidz
+: Done deploying to nftk10.vugomarscourse.testnet
+
+#+begin_src sh :exports no :results output
+near deploy nftk10.vugomarscourse.testnet --wasmFile contract/build/hello_near.wasm --initFunction init --initArgs '{"owner_id" : "vugomarscourse.testnet"}'
+#+end_src
+
+#+RESULTS:
+: Starting deployment. Account id: nftk10.vugomarscourse.testnet, node: https://rpc.testnet.near.org, helper: https://helper.testnet.near.org, file: contract/build/hello_near.wasm
+: Transaction Id CHLUfHzx79Wd2geG76ffiEnNiHy6cuq8i1GURfX4H7vR
+: To see the transaction in the transaction explorer, please open this url in your browser
+ https://explorer.testnet.near.org/transactions/CHLUfHzx79Wd2geG76ffiEnNiHy6cuq8i1GURfX4H7vR
+: Done deploying and initializing nftk10.vugomarscourse.testnet
+
+#+begin_src sh :exports no :results output
+near view nftk10.vugomarscourse.testnet nft_metadata
+#+end_src
+
+#+begin_src sh :exports no :results output
+near view nftk10.vugomarscourse.testnet nft_total_supply
+#+end_src
+
+#+RESULTS:
+: View call: nftk10.vugomarscourse.testnet.nft_total_supply()
+: 1
+
+#+begin_src sh :exports no :results output
+near call nftk10.vugomarscourse.testnet nft_mint '{"token_id": "token-03", "receiver_id": "vugomarscourse.testnet", "metadata": {"title": "NFT token 01", "description": "hello there this is nft token 01", "media": "https://bafybeihwe2nq3pimzra4n2oydvwbeubmccbb4g6urwmerwfurelyqt4lvi.ipfs.nftstorage.link"}}' --accountId vugomarscourse.testnet
+
+#+end_src
+
+#+RESULTS:
+: Scheduling a call: nftk10.vugomarscourse.testnet.nft_mint({"token_id": "token-03", "receiver_id": "vugomarscourse.testnet", "metadata": {"title": "NFT token 01", "description": "hello there this is nft token 01", "media": "https://bafybeihwe2nq3pimzra4n2oydvwbeubmccbb4g6urwmerwfurelyqt4lvi.ipfs.nftstorage.link"}})
+: Doing account.functionCall()
+: Receipt: 9qM25U49P1oKpVdXmqkPEfDdEVSRpvZrZPfRnJEsfo6D
+:   Log [nftk10.vugomarscourse.testnet]: EVENT_LOG:{"standard":"nep171","version":"nft-1.0.0","event":"nft_mint","data":[{"owner_id":"vugomarscourse.testnet","token_ids":["token-03"]}]}
+: Transaction Id DF1geUgU8tqovaWyz3xbQCEAEfJsCxqe7iXTbyX7r2yU
+: To see the transaction in the transaction explorer, please open this url in your browser
+: https://explorer.testnet.near.org/transactions/DF1geUgU8tqovaWyz3xbQCEAEfJsCxqe7iXTbyX7r2yU
+: ''
+
+#+begin_src sh :exports no :results output
+near view nftk10.vugomarscourse.testnet nft_token '{"token_id": "token-01"}'
+#+end_src
+
+#+RESULTS:
+#+begin_example
+View call: nftk10.vugomarscourse.testnet.nft_token({"token_id": "token-01"})
+{
+  token_id: 'token-01',
+  owner_id: 'vugomarscourse.testnet',
+  metadata: {
+    title: 'NFT token 01',
+    description: 'hello there this is nft token 01',
+    media: 'https://bafybeihwe2nq3pimzra4n2oydvwbeubmccbb4g6urwmerwfurelyqt4lvi.ipfs.nftstorage.link'
+  }
+}
+#+end_example
+
+#+begin_src sh :exports no :results output
+near view nftk10.vugomarscourse.testnet nft_tokens
+#+end_src
+
+#+RESULTS:
+#+begin_example
+View call: nftk10.vugomarscourse.testnet.nft_tokens()
+[
+  {
+    token_id: 'token-01',
+    owner_id: 'vugomarscourse.testnet',
+    metadata: {
+      title: 'NFT token 01',
+      description: 'hello there this is nft token 01',
+      media: 'https://bafybeihwe2nq3pimzra4n2oydvwbeubmccbb4g6urwmerwfurelyqt4lvi.ipfs.nftstorage.link'
+    }
+  },
+  {
+    token_id: 'token-02',
+    owner_id: 'vugomarscourse.testnet',
+    metadata: {
+      title: 'NFT token 01',
+      description: 'hello there this is nft token 01',
+      media: 'https://bafybeihwe2nq3pimzra4n2oydvwbeubmccbb4g6urwmerwfurelyqt4lvi.ipfs.nftstorage.link'
+    }
+  },
+  {
+    token_id: 'token-03',
+    owner_id: 'vugomarscourse.testnet',
+    metadata: {
+      title: 'NFT token 01',
+      description: 'hello there this is nft token 01',
+      media: 'https://bafybeihwe2nq3pimzra4n2oydvwbeubmccbb4g6urwmerwfurelyqt4lvi.ipfs.nftstorage.link'
+    }
+  }
+]
+#+end_example
+
+
+#+begin_src sh :exports no :results output
+near view nftk10.vugomarscourse.testnet nft_tokens_for_owner '{"owner_id": "vugomarscourse.testnet"}'
+#+end_src
+
+#+RESULTS:
+#+begin_example
+View call: nftk10.vugomarscourse.testnet.nft_tokens_for_owner({"owner_id": "vugomarscourse.testnet"})
+[
+  {
+    token_id: 'token-01',
+    owner_id: 'vugomarscourse.testnet',
+    metadata: {
+      title: 'NFT token 01',
+      description: 'hello there this is nft token 01',
+      media: 'https://bafybeihwe2nq3pimzra4n2oydvwbeubmccbb4g6urwmerwfurelyqt4lvi.ipfs.nftstorage.link'
+    }
+  },
+  {
+    token_id: 'token-02',
+    owner_id: 'vugomarscourse.testnet',
+    metadata: {
+      title: 'NFT token 01',
+      description: 'hello there this is nft token 01',
+      media: 'https://bafybeihwe2nq3pimzra4n2oydvwbeubmccbb4g6urwmerwfurelyqt4lvi.ipfs.nftstorage.link'
+    }
+  },
+  {
+    token_id: 'token-03',
+    owner_id: 'vugomarscourse.testnet',
+    metadata: {
+      title: 'NFT token 01',
+      description: 'hello there this is nft token 01',
+      media: 'https://bafybeihwe2nq3pimzra4n2oydvwbeubmccbb4g6urwmerwfurelyqt4lvi.ipfs.nftstorage.link'
+    }
+  }
+]
+#+end_example
